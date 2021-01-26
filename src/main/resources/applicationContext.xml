@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+    
+    <!--数据库配置文件位置-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    
+    <!--数据连接池对象配置-->
+    <bean id="myDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    
+    <!--创建sqlSessionFactory对象-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--将数据库连接池赋给dataSource属性-->
+        <property name="dataSource" ref="myDataSource"/>
+        <!--将mybatis主配置赋过去-->
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+    </bean>
+    
+    <!--创建dao对象，自动调用getMapper()生成dao对象-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--指定sqlSessionFactory对象的id-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <!--指定dao对象所在的包名-->
+        <property name="basePackage" value="top.dao"/>
+    </bean>
+    
+    <!--开启组件扫描器，创建service对象 @Service-->
+    <context:component-scan base-package="top.service"/>
+    
+    <!--事务管理-->
+    <!--开启事务管理对象-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--指定数据源-->
+        <property name="dataSource" ref="myDataSource"/>
+    </bean>
+    
+    <!--开启事务注解驱动-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

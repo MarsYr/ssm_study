@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!--输出日志-->
+    <!--<settings>-->
+    <!--    <setting name="logImpl" value="STDOUT_LOGGING"/>-->
+    <!--</settings>-->
+    
+    <!--为实体类设置别名-->
+    <typeAliases>
+        <package name="top.model"/>
+    </typeAliases>
+    
+    <!--绑定dao类中的sql映射文件-->
+    <!--mapper文件名称要和dao接口名一样,且在同一目录-->
+    <mappers>
+        <package name="top.dao"/>
+    </mappers>
+</configuration>
